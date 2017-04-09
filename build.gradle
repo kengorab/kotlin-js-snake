@@ -16,14 +16,31 @@ apply plugin: 'kotlin2js'
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    compile 'org.jetbrains.kotlinx:kotlinx-html-js:0.6.3'
 }
 
 compileKotlin2Js {
     kotlinOptions.outputFile = "${projectDir}/build/js/module.js"
     kotlinOptions.moduleKind = "umd"
     kotlinOptions.sourceMap = true
+}
+
+build.doLast {
+    configurations.compile.each { File file ->
+        copy {
+            includeEmptyDirs = false
+
+            from zipTree(file.absolutePath)
+            into "${projectDir}/build/js"
+            include { fileTreeElement ->
+                def path = fileTreeElement.path
+                path.endsWith(".js") && (path.startsWith("META-INF/resources/") || !path.startsWith("META-INF/"))
+            }
+        }
+    }
 }
