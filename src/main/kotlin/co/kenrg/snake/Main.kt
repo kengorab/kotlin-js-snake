@@ -15,5 +15,6 @@ fun main(args: Array<String>) {
         gridContainer = div { style = "position: relative" }
     }
 
-    val grid = Grid(10, 10, gridContainer)
+    val game = Game(gridContainer)
+    game.start()
 }
